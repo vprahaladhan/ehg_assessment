@@ -1,22 +1,9 @@
-// import ReactTooltip from 'react-tooltip';
-import "semantic-ui-css/semantic.min.css";
-import { Popup } from "semantic-ui-react";
+import React from 'react';
 
 import './App.css';
 
-// const colorToHex = color => {
-//   var hex = color.toString(16);
-//   return (hex.length === 1 && "0" + hex) || hex;
-// }
-
-// const colorToHex = color => color.toString(16).padStart(2, '0');
-
-// const convertRGBtoHex = (red, green, blue) => {
-//   return '#' + colorToHex(red) + colorToHex(green) + colorToHex(blue);
-// }
-
 const App = () => {
-  var colorBlocks = [];
+  const colorBlocks = [];
 
   for (var red = 8; red < 256; red += (red === 248) ? 7 : 8) {
     const redInHEX = red.toString(16).padStart(2, '0');
@@ -27,14 +14,11 @@ const App = () => {
       for (var blue = 8; blue < 256; blue += (blue === 248) ? 7 : 8) {
         const blueInHEX = blue.toString(16).padStart(2, '0');
         const backgroundColor = `#${redInHEX}${greenInHEX}${blueInHEX}`;
+        const tooltip = `RGB(${red},${green},${blue}); HEX ${backgroundColor}`;
 
         colorBlocks.push(
-          <Popup
-            key={backgroundColor}
-            trigger={<div className="inner" style={{ backgroundColor }}></div>}
-          >
-            {backgroundColor}
-          </Popup>
+          <div key={backgroundColor}  title={tooltip} className="inner" style={{ backgroundColor }}>
+          </div>
         );
       }
     }
