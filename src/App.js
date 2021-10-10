@@ -1,11 +1,19 @@
 import React from 'react';
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import './App.css';
 
 const App = () => {
-  const colorBlocks = [];
+  const [redValue, setRedValue] = React.useState(8);
+  const [hasMoreBlocks, setHasMoreBlocks] = React.useState(true);
+  const [colorBlocks, setColorBlocks] = React.useState([]);
 
-  for (var red = 8; red < 256; red += (red === 248) ? 7 : 8) {
+  React.useEffect(() => {
+    setBlocks(redValue);
+  }, []);
+
+  const setBlocks = (red) => {
+    var tempColorBlocks = [];
     const redInHEX = red.toString(16).padStart(2, '0');
 
     for (var green = 8; green < 256; green += (green === 248) ? 7 : 8) {
@@ -16,17 +24,38 @@ const App = () => {
         const backgroundColor = `#${redInHEX}${greenInHEX}${blueInHEX}`;
         const tooltip = `RGB(${red},${green},${blue}); HEX ${backgroundColor}`;
 
-        colorBlocks.push(
-          <div key={backgroundColor}  title={tooltip} className="inner" style={{ backgroundColor }}>
+        tempColorBlocks.push(
+          <div key={backgroundColor} title={tooltip} className="inner" style={{ backgroundColor }}>
           </div>
         );
       }
     }
+
+    setColorBlocks([...colorBlocks, tempColorBlocks])
+  }
+
+  const renderMoreColorBlocks = () => {
+    if (redValue >= 255) {
+      setHasMoreBlocks(false);
+    }
+    else {
+      const red = redValue + (redValue === 248 ? 7 : 8);
+      setRedValue(red);
+      setBlocks(red);
+    }
   }
 
   return (
-    <div className="main">
-      {colorBlocks}
+    <div id="main" className="main">
+      <InfiniteScroll
+        dataLength={colorBlocks.length}
+        next={renderMoreColorBlocks}
+        hasMore={hasMoreBlocks}
+        loader={<h4>Loading...</h4>}
+        endMessage={<p style={{ margin : '0 auto' }}><b>NO MORE COLORS!</b></p>}
+      >
+        {colorBlocks}          
+      </InfiniteScroll>
     </div>
   );
 }
